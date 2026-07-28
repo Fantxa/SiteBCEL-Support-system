@@ -2,6 +2,7 @@
 @font-face {
     font-family: 'TechFont';
     src: url(Fonts/American\ Captain.otf);
+
 }
 
 /*Color palette declaration*/
@@ -13,7 +14,6 @@
     --green-50:#59BF2A;
     --green-100:#68F205;
 
-
 }
 
 body {
@@ -23,21 +23,16 @@ body {
 
 /*Upper title*/
 #title{
-    background-image: url(Images/images\ \(5\).jpg);
+    background-image: url(Images/Design\ sem\ nome.png);
     margin: auto;
     width:  100%;
     height: 30dvh;
     border-bottom-left-radius: 10dvh;
     border-bottom-right-radius: 10dvh;
     margin-top: -80px;
+    background-position: center,center;
     
-    
-    
-    
-
 }
-
-
 
 #title-main{
     font-family: 'TechFont', sans-serif;
@@ -47,8 +42,8 @@ body {
     align-items: center;
     padding-top: 80px;
     
-
-    
 }
 
-
+#nav-menu{
+    
+}
