@@ -73,3 +73,12 @@ body {
     text-decoration: none;
     font-weight: bold;
 }
+
+#Logo{
+    width: 50dvw;
+    height: auto;
+    position: absolute;
+    bottom: 200px;
+    right: 0;
+    
+}
