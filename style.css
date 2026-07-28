@@ -44,7 +44,32 @@ body {
     
 }
 
+/*Navigation bar*/
 #nav-menu{
-    max-width: 100;
+    list-style: none;
+    position: fixed;
+    top: 30%;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+    background-color: var(--green-20);
+    border-radius: 0 10px 10px 0;
 
+    /* hidden state: pushed off-screen to the left, sliver visible */
+    transform: translateX(-80%);
+    transition: transform 0.4s ease;
+    z-index: 10;
+}
+
+#nav-menu:hover{
+    /* swipes right into full view */
+    transform: translateX(0);
+}
+
+#nav-menu li a{
+    color: var(--green-100);
+    text-decoration: none;
+    font-weight: bold;
 }
