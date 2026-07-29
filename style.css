@@ -1,84 +1,160 @@
-@charset "UTF-8";
-@font-face {
-    font-family: 'TechFont';
-    src: url(Fonts/American\ Captain.otf);
-
+:root {
+    --bg-color: #050505;
+    --neon-green: #39ff14;
+    --neon-green-dim: rgba(57, 255, 20, 0.3);
+    --text-color: #ffffff;
+    --font-title: 'Orbitron', sans-serif;
+    --font-body: 'Rajdhani', sans-serif;
 }
 
-/*Color palette declaration*/
-:root {
-    --background-main:#1c1a1a;
-    --black:#0D0D0D;
-    --green-20:#0D4006;
-    --green-30:#468C32;
-    --green-50:#59BF2A;
-    --green-100:#68F205;
-
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-    background-color: var(--background-main);
-    
-}
-
-/*Upper title*/
-#title{
-    background-image: url(Images/Design\ sem\ nome.png);
-    margin: auto;
-    width:  100%;
-    height: 30dvh;
-    border-bottom-left-radius: 10dvh;
-    border-bottom-right-radius: 10dvh;
-    margin-top: -80px;
-    background-position: center,center;
-    
-}
-
-#title-main{
-    font-family: 'TechFont', sans-serif;
-    font-size: 10dvh;
-    color: rgb(251, 249, 249);
-    text-align: center;
+    background-color: var(--bg-color);
+    background-image: radial-gradient(circle at center, #112211 0%, var(--bg-color) 70%);
+    color: var(--text-color);
+    font-family: var(--font-body);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
     align-items: center;
-    padding-top: 80px;
-    
+    overflow: hidden;
+    position: relative;
 }
 
-/*Navigation bar*/
-#nav-menu{
-    list-style: none;
-    position: fixed;
-    top: 30%;
-    left: 0;
+/* Efeito de grade high-tech no fundo */
+.overlay-grid {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: 
+        linear-gradient(var(--neon-green-dim) 1px, transparent 1px),
+        linear-gradient(90deg, var(--neon-green-dim) 1px, transparent 1px);
+    background-size: 40px 40px;
+    opacity: 0.1;
+    z-index: 0;
+}
+
+.container {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    max-width: 800px;
+    padding: 2rem;
+}
+
+.logo {
+    max-width: 400px;
+    width: 100%;
+    margin-bottom: 2rem;
+    filter: drop-shadow(0 0 15px var(--neon-green-dim));
+    animation: float 4s ease-in-out infinite;
+}
+
+h1.glitch-text {
+    font-family: var(--font-title);
+    font-size: 2.5rem;
+    color: var(--neon-green);
+    letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 10px var(--neon-green);
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    color: #aaaaaa;
+    margin-bottom: 3rem;
+    letter-spacing: 1px;
+}
+
+.difficulty-selector {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Botões Estilo Neon Mirabolante */
+.btn-neon {
+    background: transparent;
+    border: 2px solid var(--neon-green);
+    color: var(--neon-green);
+    padding: 1.5rem 2rem;
+    font-family: var(--font-title);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    box-shadow: 0 0 10px var(--neon-green-dim), inset 0 0 10px var(--neon-green-dim);
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    padding: 20px;
-    background-color: var(--green-20);
-    border-radius: 0 10px 10px 0;
-
-    /* hidden state: pushed off-screen to the left, sliver visible */
-    transform: translateX(-80%);
-    transition: transform 0.4s ease;
-    z-index: 10;
+    align-items: center;
+    min-width: 200px;
 }
 
-#nav-menu:hover{
-    /* swipes right into full view */
-    transform: translateX(0);
-}
-
-#nav-menu li a{
-    color: var(--green-100);
-    text-decoration: none;
+.btn-neon .btn-text {
+    font-size: 1.2rem;
     font-weight: bold;
+    z-index: 2;
 }
 
-#Logo{
-    width: 50dvw;
-    height: auto;
-    position: absolute;
-    bottom: 200px;
-    right: 0;
-    
+.btn-neon .btn-detail {
+    font-size: 0.8rem;
+    font-family: var(--font-body);
+    margin-top: 0.5rem;
+    opacity: 0.8;
+    z-index: 2;
 }
+
+/* Efeito Hover nos botões */
+.btn-neon:hover {
+    background: var(--neon-green);
+    color: var(--bg-color);
+    box-shadow: 0 0 25px var(--neon-green), inset 0 0 15px var(--neon-green);
+    transform: scale(1.05) translateY(-5px);
+}
+
+.btn-neon::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(45deg) translateY(100%);
+    transition: transform 0.5s ease;
+    z-index: 1;
+}
+
+.btn-neon:hover::before {
+    transform: rotate(45deg) translateY(-100%);
+}
+
+/* Animações */
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+/* Estilos do Loader (Pós-clique) */
+.hidden { display: none !important; }
+
+#loader {
+    margin-top: 3rem;
+    color: var(--neon-green);
+}
+
+.spinner {
+    width: 40px; height: 40px;
+    border: 4px solid var(--neon-green-dim);
+    border-top: 4px solid var(--neon-green);
+    border-radius: 50%;
+    margin: 0 auto 1rem auto;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }

@@ -1,26 +1,50 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BCEL Support System</title>
+    <title>BCEL - Balanceamento Químico</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Fontes futuristas e técnicas do Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-     
-     <!--Upper title-->
-    <header id="title">
-        <h1 id="title-main">Let's get started</h1>
-    </header>
-
-    <!--Navigation menu-->
-    <menu id="nav-menu">
-    <li><a href="#">Home</a></li>
-    <li><a href="#">Suporte</a></li>
-    <li><a href="#">Contato</a></li>
-    </menu>
-
+    <div class="overlay-grid"></div> <!-- Efeito de grade no fundo -->
     
-    <script src="main.js"></script>
+    <div class="container">
+        <header>
+            <img src="logo.jpg" alt="Logo BCEL" class="logo">
+        </header>
+
+        <main>
+            <h1 class="glitch-text">INICIAR SIMULAÇÃO</h1>
+            <p class="subtitle">Selecione o nível de complexidade das equações</p>
+            
+            <div class="difficulty-selector">
+                <button class="btn-neon easy" data-level="1" data-name="Iniciante">
+                    <span class="btn-text">INICIANTE</span>
+                    <span class="btn-detail">Nível 1</span>
+                </button>
+                
+                <button class="btn-neon medium" data-level="2" data-name="Intermediário">
+                    <span class="btn-text">INTERMEDIÁRIO</span>
+                    <span class="btn-detail">Nível 2</span>
+                </button>
+                
+                <button class="btn-neon hard" data-level="3" data-name="Avançado">
+                    <span class="btn-text">AVANÇADO</span>
+                    <span class="btn-detail">Nível 3</span>
+                </button>
+            </div>
+
+            <!-- Loader escondido para quando consultar o BD -->
+            <div id="loader" class="hidden">
+                <div class="spinner"></div>
+                <p>Conectando ao banco de dados...</p>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
