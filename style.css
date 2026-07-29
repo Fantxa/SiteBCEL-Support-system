@@ -52,6 +52,7 @@ body {
     margin-bottom: 2rem;
     filter: drop-shadow(0 0 15px var(--neon-green-dim));
     animation: float 4s ease-in-out infinite;
+    border-radius: 20px;
 }
 
 h1.glitch-text {
