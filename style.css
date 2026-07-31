@@ -158,4 +158,32 @@ h1.glitch-text {
     animation: spin 1s linear infinite;
 }
 
+/* ============================
+   Botão de Iniciar (Redirecionamento)
+   ============================ */
+.tech-btn {
+    background: var(--green-50);
+    color: var(--black);
+    border: none;
+    padding: 15px 30px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+    margin-top: 10px;
+}
+
+.tech-btn:hover {
+    background: var(--green-100);
+    box-shadow: 0 0 20px rgba(104, 242, 5, 0.4);
+    transform: translateY(-2px);
+}
+
+.tech-btn.hidden {
+    display: none;
+}
+
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }

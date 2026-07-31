@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Balanceamento Inteligente | BCEL</title>
+    <link rel="stylesheet" href="SmartPagesty.css">
+</head>
+<body>
+
+    <header id="app-header">
+        <div class="header-content">
+            <h1 id="title-main">Balanceamento Químico</h1>
+            <p id="title-sub">Clique nas moléculas para adicioná-las. Clique nas instâncias para reverter.</p>
+        </div>
+        <div class="db-status">
+            <span class="status-dot"></span> Conectado ao DB (Simulado)
+        </div>
+    </header>
+
+    <main id="lab-environment">
+        <!-- Área onde a equação textual aparece -->
+        <section id="equation-display">
+            <div id="equation-text">Carregando equação...</div>
+        </section>
+
+        <!-- Área onde os átomos são empilhados visualmente -->
+        <section id="visual-board">
+            <div class="side-container" id="reactants-zone">
+                <h3 class="zone-title">Reagentes</h3>
+                <div class="stack-area" id="reactants-stack"></div>
+                <div class="atom-counter" id="reactants-counter"></div>
+            </div>
+
+            <div class="arrow-divider">➔</div>
+
+            <div class="side-container" id="products-zone">
+                <h3 class="zone-title">Produtos</h3>
+                <div class="stack-area" id="products-stack"></div>
+                <div class="atom-counter" id="products-counter"></div>
+            </div>
+        </section>
+
+        <!-- Área dos botões/pool onde o usuário clica para jogar pra cima -->
+        <section id="molecule-pool">
+            <div class="pool-side" id="reactants-pool">
+                <!-- Preenchido via JS -->
+            </div>
+            
+            <div class="pool-controls">
+                <button id="btn-verify" class="tech-btn">Verificar Balanceamento</button>
+                <button id="btn-next" class="tech-btn outline hidden">Próxima Questão</button>
+            </div>
+
+            <div class="pool-side" id="products-pool">
+                <!-- Preenchido via JS -->
+            </div>
+        </section>
+    </main>
+
+    <script src="App.js"></script>
+</body>
+</html>
