@@ -1,116 +1,100 @@
-import * as THREE from 'three';
-
 document.addEventListener("DOMContentLoaded", () => {
+    // 1. Mapeamento de todos os elementos do HTML
     const buttons = document.querySelectorAll('.btn-neon');
+    const btnStart = document.getElementById('btn-start');
     const difficultySelector = document.querySelector('.difficulty-selector');
     const loader = document.getElementById('loader');
     const subtitle = document.querySelector('.subtitle');
+    const readout = document.getElementById('difficulty-readout');
 
+    let selectedLevel = null;
+    let selectedName = null;
+
+    // 2. Lógica de seleção do nível de dificuldade
     buttons.forEach(button => {
-        button.addEventListener('click', async (e) => {
-            // Previne duplo clique acidental
-            buttons.forEach(b => b.disabled = true);
+        button.addEventListener('click', () => {
+            // Remove o efeito visual de todos os botões e aplica apenas no selecionado
+            buttons.forEach(b => b.style.boxShadow = "0 0 10px var(--neon-green-dim), inset 0 0 10px var(--neon-green-dim)");
+            button.style.boxShadow = "0 0 25px var(--neon-green), inset 0 0 15px var(--neon-green)";
 
-            const levelId = button.getAttribute('data-level');
-            const levelName = button.getAttribute('data-name');
+            // Salva os dados do botão clicado
+            selectedLevel = button.getAttribute('data-level');
+            selectedName = button.getAttribute('data-name');
+            
+            // Atualiza o texto de leitura se ele existir
+            if (readout) {
+                readout.textContent = `Nível selecionado: ${selectedName}. Pronto para iniciar.`;
+            }
 
-            // Feedback visual de transição
-            difficultySelector.classList.add('hidden');
-            subtitle.innerText = `Iniciando calibração para o nível: ${levelName}...`;
-            loader.classList.remove('hidden');
-
-            // Chama a função que gerencia a comunicação com o Banco de Dados
-            await initializeGameSession(levelId, levelName);
+            // Revela o botão de iniciar
+            btnStart.classList.remove('hidden');
         });
     });
-});
 
-/**
- * Função pronta para integração com backend/SQL
- */
-async function initializeGameSession(levelId, levelName) {
-    try {
-        /* ========================================================
-           EXEMPLO DE INTEGRAÇÃO COM BACKEND / BANCO DE DADOS SQL
-           Descomente e ajuste a URL/Método conforme sua API
-           ======================================================== */
+    // 3. Lógica do botão "Acessar Laboratório"
+    btnStart.addEventListener('click', async () => {
+        if (!selectedLevel) return; // Trava de segurança
+
+        // Feedback visual: esconde os botões e mostra a interface de carregamento
+        btnStart.classList.add('hidden');
+        difficultySelector.classList.add('hidden');
+        if (readout) readout.classList.add('hidden');
         
-        /*
-        const response = await fetch('/api/iniciar-balanceamento', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                dificuldade_id: levelId,
-                timestamp: new Date().toISOString()
-            })
-        });
+        subtitle.innerText = `Iniciando calibração para o nível: ${selectedName}...`;
+        loader.classList.remove('hidden');
 
-        if (!response.ok) {
-            throw new Error('Falha na comunicação com o banco de dados');
+        // Dispara a comunicação (simulada) com o BD
+        await initializeGameSession(selectedLevel, selectedName);
+    });
+
+    // 4. Conexão com Banco de Dados e Redirecionamento Final
+    async function initializeGameSession(levelId, levelName) {
+        try {
+            console.log(`[Banco de Dados] Simulando requisição: Nível ${levelId} - ${levelName}`);
+            
+            // Simula o tempo de resposta do servidor (2 segundos)
+            setTimeout(() => {
+                // REDIRECIONAMENTO CORRIGIDO: 
+                // Envia o usuário para a página inteligente passando o nível na URL
+                window.location.href = `SmartPage.html?level=${levelId}`;
+            }, 2000);
+
+        } catch (error) {
+            console.error('Erro na integração com BD:', error);
+            
+            // AQUI ESTÁ A MUDANÇA! Substituímos o alert nativo pelo seu showAlert customizado
+            showAlert('Erro ao conectar com os servidores centrais. Tente novamente.', true);
+            
+            // Restaura a tela em caso de falha no servidor
+            difficultySelector.classList.remove('hidden');
+            loader.classList.add('hidden');
+            btnStart.classList.remove('hidden');
+            subtitle.innerText = "Selecione o nível de complexidade das equações";
+            if (readout) readout.classList.remove('hidden');
         }
-
-        const data = await response.json();
-        
-        // Redireciona o usuário para a página do jogo com o ID da sessão criada no SQL
-        window.location.href = `/jogo.html?session=${data.sessionId}`;
-        */
-
-        // SIMULAÇÃO para você ver funcionando no Front-End agora:
-        console.log(`[Banco de Dados] Simulando inserção de nova partida: Nível ${levelId} - ${levelName}`);
-        
-        setTimeout(() => {
-            alert(`Sessão do nível ${levelName} registrada no BD (Simulado)!\n\nPronto para redirecionar para a tela da equação.`);
-            // Reseta a tela (Apenas para demonstração, normalmente aqui você redirecionaria de página)
-            document.querySelector('.difficulty-selector').classList.remove('hidden');
-            document.getElementById('loader').classList.add('hidden');
-            document.querySelector('.subtitle').innerText = "Selecione o nível de complexidade das equações";
-            document.querySelectorAll('.btn-neon').forEach(b => b.disabled = false);
-        }, 2000); // Finge que o servidor levou 2 segundos para responder
-
-    } catch (error) {
-        console.error('Erro na integração com BD:', error);
-        alert('Erro ao conectar com os servidores centrais. Tente novamente.');
-        
-        // Restaura a tela em caso de erro
-        document.querySelector('.difficulty-selector').classList.remove('hidden');
-        document.getElementById('loader').classList.add('hidden');
-        document.querySelectorAll('.btn-neon').forEach(b => b.disabled = false);
     }
+});
+
+// Função do modal customizado
+function showAlert(message, isError = false) {
+    const alertBox = document.getElementById('custom-alert');
+    const alertMsg = document.getElementById('alert-message');
+    const alertClose = document.getElementById('alert-close');
+    const alertContent = alertBox.querySelector('.alert-content');
+
+    // Se for erro, pinta de vermelho. Se não, verde neon.
+    if (isError) {
+        alertContent.style.borderColor = '#D9483A';
+        alertContent.style.boxShadow = '0 0 20px rgba(217, 72, 58, 0.4)';
+    } else {
+        alertContent.style.borderColor = 'var(--neon-green, #59BF2A)';
+        alertContent.style.boxShadow = '0 0 20px rgba(89, 191, 42, 0.4)';
+    }
+
+    alertMsg.textContent = message;
+    alertBox.classList.remove('hidden');
+
+    alertClose.onclick = () => {
+        alertBox.classList.add('hidden');
+    };
 }
-
-// ============================
-// Difficulty selector & Redirecionamento
-// ============================
-const difficultyOptions = document.querySelectorAll('.difficulty-option');
-const glider = document.querySelector('.difficulty-glider');
-const readout = document.getElementById('difficulty-readout');
-const btnStart = document.getElementById('btn-start'); // Puxa o novo botão
-
-const levelIndex = { easy: 0, medium: 1, hard: 2 };
-let selectedLevel = null; // Variável para guardar a escolha do usuário
-
-difficultyOptions.forEach((option) => {
-    option.addEventListener('click', () => {
-        // Remove a classe active de todos e adiciona no clicado
-        difficultyOptions.forEach((btn) => btn.classList.remove('active'));
-        option.classList.add('active');
-
-        // Move a barra verde
-        selectedLevel = option.dataset.level;
-        glider.style.transform = `translateX(${levelIndex[selectedLevel] * 100}%)`;
-        readout.textContent = option.dataset.readout;
-
-        // Faz o botão de iniciar aparecer
-        btnStart.classList.remove('hidden');
-    });
-});
-
-// Ação de clique para redirecionar para a página inteligente
-btnStart.addEventListener('click', () => {
-    if (selectedLevel) {
-        // Redireciona para o arquivo da página 2, passando a dificuldade pela URL
-        window.location.href = `balanceamento.html?level=${selectedLevel}`;
-    }
-});

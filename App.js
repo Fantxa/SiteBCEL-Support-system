@@ -160,14 +160,14 @@ function renderEquationText(level, state) {
     equationText.innerHTML = `${strReactants} ➔ ${strProducts}`;
 }
 
-// 7. Lógica de Verificação (Conferindo Matemática)
+// 7. Lógica de Verificação (Conferindo Matemática) - AGORA SÓ TEM UMA VERSÃO!
 btnVerify.onclick = () => {
     const countR = calculateAtoms(userState.reactants);
     const countP = calculateAtoms(userState.products);
 
     // Se o painel estiver vazio, já barra
     if (Object.keys(countR).length === 0 && Object.keys(countP).length === 0) {
-        alert("Adicione moléculas antes de verificar!");
+        showAlert("Adicione moléculas antes de verificar!", true);
         return;
     }
 
@@ -188,11 +188,11 @@ btnVerify.onclick = () => {
 
     if (isBalanced) {
         equationText.style.color = "var(--green-100)";
-        alert("Sucesso! Equação Balanceada perfeitamente.");
+        showAlert("Sucesso! Equação Balanceada perfeitamente."); // Verde
         btnVerify.classList.add('hidden');
         btnNext.classList.remove('hidden');
     } else {
-        alert("Ainda não está balanceado. Cheque os contadores de átomos abaixo das pilhas!");
+        showAlert("Ainda não está balanceado. Cheque os contadores de átomos abaixo das pilhas!", true);
     }
 };
 
@@ -200,11 +200,36 @@ btnNext.onclick = () => {
     equationText.style.color = "var(--white-soft)";
     currentLevelIndex++;
     if(currentLevelIndex >= databaseMock.length) {
-        alert("Fim das questões do banco de dados!");
+        showAlert("Fim das questões do banco de dados!");
         currentLevelIndex = 0; // Reseta pro inicio
     }
     loadLevel(currentLevelIndex);
 };
+
+// ============================
+// Modal de Alerta Customizado (INSERIDO AQUI TAMBÉM)
+// ============================
+function showAlert(message, isError = false) {
+    const alertBox = document.getElementById('custom-alert');
+    const alertMsg = document.getElementById('alert-message');
+    const alertClose = document.getElementById('alert-close');
+    const alertContent = alertBox.querySelector('.alert-content');
+
+    if (isError) {
+        alertContent.style.borderColor = '#D9483A';
+        alertContent.style.boxShadow = '0 0 20px rgba(217, 72, 58, 0.4)';
+    } else {
+        alertContent.style.borderColor = 'var(--green-50, #59BF2A)';
+        alertContent.style.boxShadow = '0 0 20px rgba(89, 191, 42, 0.4)';
+    }
+
+    alertMsg.textContent = message;
+    alertBox.classList.remove('hidden');
+
+    alertClose.onclick = () => {
+        alertBox.classList.add('hidden');
+    };
+}
 
 // Iniciar a aplicação
 loadLevel(currentLevelIndex);
