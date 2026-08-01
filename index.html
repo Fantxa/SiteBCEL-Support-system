@@ -7,57 +7,81 @@
     <link rel="stylesheet" href="style.css">
     <!-- Fontes futuristas e técnicas do Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BCEL - Balanceamento Químico</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+
+    <!-- NOVO: diz ao navegador onde encontrar o pacote "three" -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.module.js",
+            "three/examples/jsm/": "https://cdn.jsdelivr.net/npm/three@0.185.1/examples/jsm/",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.185.1/examples/jsm/"
+        }
+    }
+    </script>
 </head>
 <body>
     <div class="overlay-grid"></div> <!-- Efeito de grade no fundo -->
-    
+
     <div class="container">
         <header>
             <img src="Images/Logo.png" alt="Logo BCEL" class="logo">
         </header>
 
-        <main>
-            <h1 class="glitch-text">INICIAR SIMULAÇÃO</h1>
-            <p class="subtitle">Selecione o nível de complexidade das equações</p>
+        <!-- Container flexível para alinhar o conteúdo principal e o 3D lado a lado -->
+        <div class="content-wrapper">
             
-            <div class="difficulty-selector">
-                <button class="btn-neon easy" data-level="1" data-name="Iniciante">
-                    <span class="btn-text">INICIANTE</span>
-                    <span class="btn-detail">Nível 1</span>
-                </button>
+            <main>
+                <h1 class="glitch-text">INICIAR SIMULAÇÃO</h1>
+                <p class="subtitle">Selecione o nível de complexidade das equações</p>
                 
-                <button class="btn-neon medium" data-level="2" data-name="Intermediário">
-                    <span class="btn-text">INTERMEDIÁRIO</span>
-                    <span class="btn-detail">Nível 2</span>
-                </button>
-                
-                <button class="btn-neon hard" data-level="3" data-name="Avançado">
-                    <span class="btn-text">AVANÇADO</span>
-                    <span class="btn-detail">Nível 3</span>
-                </button>
-            </div>
+                <div class="difficulty-selector">
+                    <button class="btn-neon easy" data-level="1" data-name="Iniciante">
+                        <span class="btn-text">INICIANTE</span>
+                        <span class="btn-detail">Nível 1</span>
+                    </button>
+                    
+                    <button class="btn-neon medium" data-level="2" data-name="Intermediário">
+                        <span class="btn-text">INTERMEDIÁRIO</span>
+                        <span class="btn-detail">Nível 2</span>
+                    </button>
+                    
+                    <button class="btn-neon hard" data-level="3" data-name="Avançado">
+                        <span class="btn-text">AVANÇADO</span>
+                        <span class="btn-detail">Nível 3</span>
+                    </button>
+                </div>
 
-            <p id="difficulty-readout">Escolha um nível para começar.</p>
+                <p id="difficulty-readout">Escolha um nível para começar.</p>
 
-            <!-- Loader escondido para quando consultar o BD -->
-            <div id="loader" class="hidden">
-                <div class="spinner"></div>
-                <p>Conectando ao banco de dados...</p>
-            </div>
+                <!-- Loader escondido para quando consultar o BD -->
+                <div id="loader" class="hidden">
+                    <div class="spinner"></div>
+                    <p>Conectando ao banco de dados...</p>
+                </div>
 
-            <button id="btn-start" class="tech-btn hidden">Acessar Laboratório</button>
+                <button id="btn-start" class="tech-btn hidden">Acessar Laboratório</button>
+            </main>
 
-        </main>
-    </div>
-
-    <!-- Modal Customizado de Alerta -->
-    <div id="custom-alert" class="custom-alert hidden">
-        <div class="alert-content">
-            <span id="alert-message">Mensagem do sistema</span>
-            <button id="alert-close" class="tech-btn outline small">OK</button>
+            <!-- NOVA ÁREA: Contêiner do Modelo 3D -->
+            <aside class="learning-section">
+                <h2 class="neon-subtitle">Aprendendo na prática!</h2>
+                <div id="3d-model-box" class="model-container">
+                    <!-- O Three.js vai injetar o Canvas aqui -->
+                </div>
+            </aside>
+            
         </div>
     </div>
 
-    <script src="main.js"></script>
+    <!-- ... (Mantenha seu modal de alerta aqui) ... -->
+
+    <!-- ATENÇÃO: Adicionado type="module" para suportar o Three.js -->
+    <script type="module" src="main.js"></script>
 </body>
 </html>

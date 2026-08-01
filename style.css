@@ -18,14 +18,14 @@ body {
     background-image: radial-gradient(circle at center, #112211 0%, var(--bg-color) 70%);
     color: var(--text-color);
     font-family: var(--font-body);
-    height: 100vh;
+    min-height: 100vh; /* Substitua 'height' por 'min-height' */
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
+    overflow-x: hidden; /* Remova o overflow: hidden geral e deixe apenas o eixo X */
     position: relative;
+    padding: 20px 0; /* Espaço para respirar */
 }
-
 /* Efeito de grade high-tech no fundo */
 .overlay-grid {
     position: absolute;
@@ -42,7 +42,8 @@ body {
     position: relative;
     z-index: 1;
     text-align: center;
-    max-width: 800px;
+    max-width: 1200px; /* Aumentado para acomodar o 3D */
+    width: 100%;
     padding: 2rem;
 }
 
@@ -239,6 +240,54 @@ h1.glitch-text {
 .tech-btn.small {
     padding: 8px 25px;
     font-size: 1rem;
+}
+/* Layout para separar os menus do modelo 3D */
+.content-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    justify-content: center;
+    align-items: center;
+}
+
+main {
+    flex: 1;
+    min-width: 300px;
+}
+
+/* Estilos exclusivos para a área do 3D */
+.learning-section {
+    flex: 1;
+    min-width: 300px;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.neon-subtitle {
+    font-size: 1.5rem;
+    color: var(--neon-green);
+    margin-bottom: 1rem;
+    font-family: var(--font-title);
+    text-shadow: 0 0 8px var(--neon-green-dim);
+    letter-spacing: 1px;
+}
+
+.model-container {
+    width: 100%;
+    height: 350px;
+    background: rgba(10, 10, 10, 0.6);
+    border: 2px dashed var(--neon-green-dim);
+    border-radius: 12px;
+    box-shadow: inset 0 0 20px rgba(57, 255, 20, 0.1);
+    position: relative;
+    overflow: hidden;
+    cursor: grab;
+}
+
+.model-container:active {
+    cursor: grabbing;
 }
 
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
