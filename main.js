@@ -19,8 +19,9 @@ function init3DModel() {
     // 1. Cria a Cena
     const scene = new THREE.Scene();
 
-    const axesHelper = new THREE.AxesHelper(5);
-    scene.add(axesHelper);
+    const clock = new THREE.Clock(); // Medidor de tempo
+    let mixer; // Controlador da animação
+
 
     // 2. Configura a Câmera
     const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
@@ -52,6 +53,7 @@ function init3DModel() {
     directionalLight.position.set(5, 10, 7);
     scene.add(directionalLight);
 
+    
     // 5. Carregador FBX
     const loader = new FBXLoader();
     let molecule;
@@ -64,6 +66,16 @@ function init3DModel() {
         molecule.position.set(0, -1, 0); 
         
         scene.add(molecule);
+
+        // --- INÍCIO DO CÓDIGO NOVO DA ANIMAÇÃO ---
+        if (object.animations && object.animations.length > 0) {
+            mixer = new THREE.AnimationMixer(object);
+            
+            // Pega a primeira animação da lista (índice 0) e dá play
+            const action = mixer.clipAction(object.animations[0]); 
+            action.play();
+        }
+        // --- FIM DO CÓDIGO NOVO ---
     }, 
     (xhr) => {
         console.log('Carregando 3D: ' + Math.round(xhr.loaded / xhr.total * 100) + '%');
@@ -71,10 +83,16 @@ function init3DModel() {
     (error) => {
         console.error('Erro CRÍTICO ao carregar o modelo FBX. Verifique o caminho ou a pasta public:', error);
     });
-
+    
     // 6. Loop de Animação
     function animate() {
         requestAnimationFrame(animate);
+        
+        // --- CÓDIGO DE ATUALIZAÇÃO DA ANIMAÇÃO ---
+        const delta = clock.getDelta(); // Calcula o tempo que passou
+        if (mixer) {
+            mixer.update(delta); // Passa esse tempo para a animação avançar
+        }
         
         controls.update(); // obrigatório por causa do damping/autoRotate
         
