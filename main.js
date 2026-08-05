@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { fetchQuestionsByLevel } from './questionsService.js';
 
 // ============================
 // Configuração do Modelo 3D
@@ -138,14 +139,23 @@ document.addEventListener("DOMContentLoaded", () => {
         await initializeGameSession(selectedLevel, selectedName);
     });
 
-    // Conexão com Banco de Dados e Redirecionamento Final
+    // Conexão com o banco de dados e redirecionamento final.
+    // A busca em si mora em questionsService.js (fetchQuestionsByLevel).
+    // Quando o Firebase for plugado lá, nada aqui precisa mudar.
     async function initializeGameSession(levelId, levelName) {
         try {
-            setTimeout(() => {
-                window.location.href = `SmartPage.html?level=${levelId}`;
-            }, 2000);
+            const questions = await fetchQuestionsByLevel(levelId);
+
+            // Guarda as questões e o nível escolhido para a SmartPage.html
+            // ler direto do sessionStorage, sem precisar buscar de novo.
+            sessionStorage.setItem('bcel_questions', JSON.stringify(questions));
+            sessionStorage.setItem('bcel_level', levelId);
+            sessionStorage.setItem('bcel_level_name', levelName);
+
+            window.location.href = `SmartPage.html?level=${levelId}`;
         } catch (error) {
-            showAlert('Erro ao conectar com os servidores centrais. Tente novamente.', true);
+            console.error('Falha ao buscar questões do banco de dados:', error);
+            showAlert(error?.message || 'Erro ao conectar com os servidores centrais. Tente novamente.', true);
             
             difficultySelector.classList.remove('hidden');
             loader.classList.add('hidden');

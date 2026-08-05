@@ -8,13 +8,7 @@
     <!-- Fontes futuristas e técnicas do Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BCEL - Balanceamento Químico</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
-
-    <!-- NOVO: diz ao navegador onde encontrar o pacote "three" -->
+    <!-- Diz ao navegador onde encontrar o pacote "three" -->
     <script type="importmap">
     {
         "imports": {
@@ -68,7 +62,7 @@
                 <button id="btn-start" class="tech-btn hidden">Acessar Laboratório</button>
             </main>
 
-            <!-- NOVA ÁREA: Contêiner do Modelo 3D -->
+            <!-- Contêiner do Modelo 3D -->
             <aside class="learning-section">
                 <h2 class="neon-subtitle">Aprendendo na prática!</h2>
                 <div id="3d-model-box" class="model-container">
@@ -79,9 +73,15 @@
         </div>
     </div>
 
-    <!-- ... (Mantenha seu modal de alerta aqui) ... -->
+    <!-- Modal de Alerta Customizado (usado por showAlert() em main.js, ex: erro ao buscar no banco) -->
+    <div id="custom-alert" class="custom-alert hidden">
+        <div class="alert-content">
+            <span id="alert-message"></span>
+            <button id="alert-close" class="tech-btn small">Fechar</button>
+        </div>
+    </div>
 
-    <!-- ATENÇÃO: Adicionado type="module" para suportar o Three.js -->
+    <!-- type="module" para suportar o Three.js e os imports (main.js -> questionsService.js) -->
     <script type="module" src="main.js"></script>
 </body>
 </html>
