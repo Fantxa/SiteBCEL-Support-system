@@ -1,33 +1,12 @@
-// 1. Simulação do Banco de Dados (SQL)
-const databaseMock = [
-    {
-        id: 1,
-        textReactants: ["H₂", "O₂"],
-        textProducts: ["H₂O"],
-        reactants: [
-            { id: "h2", label: "H₂", composition: { H: 2 } },
-            { id: "o2", label: "O₂", composition: { O: 2 } }
-        ],
-        products: [
-            { id: "h2o", label: "H₂O", composition: { H: 2, O: 1 } }
-        ]
-    },
-    {
-        id: 2,
-        textReactants: ["N₂", "H₂"],
-        textProducts: ["NH₃"],
-        reactants: [
-            { id: "n2", label: "N₂", composition: { N: 2 } },
-            { id: "h2", label: "H₂", composition: { H: 2 } }
-        ],
-        products: [
-            { id: "nh3", label: "NH₃", composition: { N: 1, H: 3 } }
-        ]
-    }
-];
+import { fetchQuestionsByLevel } from './questionsService.js';
+
+// 1. Questões do banco de dados
+// O array fixo que existia aqui virou mock dentro de questionsService.js,
+// que é o único lugar que precisa ser tocado pra plugar o Firebase de verdade.
 
 // Estado atual do jogo
 let currentLevelIndex = 0;
+let levels = []; // questões do nível escolhido, carregadas em initApp()
 let userState = {
     reactants: [], // Array de instâncias colocadas
     products: []
@@ -46,7 +25,7 @@ const btnNext = document.getElementById('btn-next');
 
 // 2. Inicialização do Nível
 function loadLevel(index) {
-    const level = databaseMock[index];
+    const level = levels[index];
     userState.reactants = [];
     userState.products = [];
     
@@ -90,7 +69,7 @@ function removeMolecule(uid, side) {
 
 // 6. Atualização Visual e Contagem
 function updateUI() {
-    const level = databaseMock[currentLevelIndex];
+    const level = levels[currentLevelIndex];
     
     // Atualiza o empilhamento visual
     renderStack(userState.reactants, reactantsStack, 'reactants');
@@ -199,7 +178,7 @@ btnVerify.onclick = () => {
 btnNext.onclick = () => {
     equationText.style.color = "var(--white-soft)";
     currentLevelIndex++;
-    if(currentLevelIndex >= databaseMock.length) {
+    if(currentLevelIndex >= levels.length) {
         showAlert("Fim das questões do banco de dados!");
         currentLevelIndex = 0; // Reseta pro inicio
     }
@@ -231,5 +210,49 @@ function showAlert(message, isError = false) {
     };
 }
 
+// ============================
+// Carregamento das questões (Banco de Dados)
+// ============================
+// A busca em si mora em questionsService.js (fetchQuestionsByLevel) —
+// esse é o único arquivo que precisa mudar quando o Firebase entrar.
+// Aqui só decidimos DE ONDE pegar os dados: se a tela de seleção de
+// dificuldade (index.html) já buscou e guardou no sessionStorage,
+// reaproveita; senão, busca direto pelo nível que veio na URL.
+
+async function getQuestionsForLevel(levelId) {
+    const cachedLevel = sessionStorage.getItem('bcel_level');
+    const cachedQuestions = sessionStorage.getItem('bcel_questions');
+
+    if (cachedLevel === levelId && cachedQuestions) {
+        try {
+            return JSON.parse(cachedQuestions);
+        } catch (e) {
+            console.warn('Dados em sessionStorage inválidos, buscando de novo no banco.', e);
+        }
+    }
+
+    return fetchQuestionsByLevel(levelId);
+}
+
+async function initApp() {
+    const params = new URLSearchParams(window.location.search);
+    const levelId = params.get('level') || '1';
+
+    try {
+        levels = await getQuestionsForLevel(levelId);
+
+        if (!levels || levels.length === 0) {
+            throw new Error(`Nenhuma questão disponível para o nível ${levelId}.`);
+        }
+
+        currentLevelIndex = 0;
+        loadLevel(currentLevelIndex);
+    } catch (error) {
+        console.error('Falha ao carregar questões do banco de dados:', error);
+        equationText.textContent = 'Não foi possível carregar as questões.';
+        showAlert(error?.message || 'Erro ao conectar com os servidores centrais. Tente novamente.', true);
+    }
+}
+
 // Iniciar a aplicação
-loadLevel(currentLevelIndex);
+initApp();

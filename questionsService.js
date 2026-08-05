@@ -1,24 +1,36 @@
 // ============================================================
 //  SERVIÇO DE QUESTÕES
 //  Ponto único de integração com o banco de dados (Firebase)
+//  Usado pelas duas telas: index.html (seletor de dificuldade)
+//  e SmartPage.html (laboratório onde o jogo acontece)
 // ============================================================
 //
 // Este é o ÚNICO arquivo que precisa ser mexido para plugar o banco
-// de dados de verdade. O resto da aplicação (main.js) já está pronto:
-// ele só chama fetchQuestionsByLevel(levelId) e espera receber de
-// volta uma lista de questões daquele nível.
+// de dados de verdade. O resto da aplicação já está pronto: ela só
+// chama fetchQuestionsByLevel(levelId) e espera receber de volta uma
+// lista de questões daquele nível.
 //
 // CONTRATO (mantenha a assinatura, troque só o conteúdo da função):
 //   fetchQuestionsByLevel(levelId) -> Promise<Array<Questao>>
 //
-// Formato esperado de cada questão (ajuste os campos conforme o
-// modelo de dados real que for definido no Firestore):
+// Formato de cada questão — é o que App.js (SmartPage) usa de verdade
+// pra montar o jogo e conferir o balanceamento:
 //   {
-//     id: string,              // id do documento no Firestore
-//     equation: string,        // ex: "__ H2 + __ O2 -> __ H2O"
-//     coefficients: number[],  // coeficientes corretos, ex: [2, 1, 2]
-//     level: number            // 1, 2 ou 3
+//     id: string | number,
+//     level: number,             // 1, 2 ou 3
+//     textReactants: string[],   // rótulos de exibição, ex: ["H₂", "O₂"]
+//     textProducts: string[],    // ex: ["H₂O"]
+//     reactants: [
+//       { id: string, label: string, composition: { [elemento]: quantidade } }
+//     ],
+//     products: [
+//       { id: string, label: string, composition: { [elemento]: quantidade } }
+//     ]
 //   }
+//
+// "composition" é a fórmula em objeto: quantos átomos de cada elemento
+// tem em UMA molécula (ex: H₂O -> { H: 2, O: 1 }). É isso que o App.js
+// usa pra contar os átomos e conferir se o usuário balanceou certo.
 //
 // ------------------------------------------------------------
 // TODO (integração com Firebase):
@@ -41,6 +53,10 @@
 //                throw new Error(`Nenhuma questão encontrada para o nível ${levelId}.`);
 //            }
 //
+//            // Cada documento no Firestore deve ter os campos descritos
+//            // no formato de "Questao" acima (textReactants, reactants
+//            // com composition, etc.) — ajuste aqui se o nome dos campos
+//            // no banco for diferente.
 //            return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 //        }
 //
@@ -54,14 +70,63 @@ const SIMULATED_NETWORK_DELAY_MS = 1200;
 // Apague este objeto quando a query real estiver implementada.
 const MOCK_QUESTIONS_BY_LEVEL = {
     '1': [
-        { id: 'mock-1-1', equation: '__ H2 + __ O2 -> __ H2O', coefficients: [2, 1, 2], level: 1 },
-        { id: 'mock-1-2', equation: '__ N2 + __ H2 -> __ NH3', coefficients: [1, 3, 2], level: 1 },
+        {
+            id: 'mock-1-1',
+            level: 1,
+            textReactants: ['H₂', 'O₂'],
+            textProducts: ['H₂O'],
+            reactants: [
+                { id: 'h2', label: 'H₂', composition: { H: 2 } },
+                { id: 'o2', label: 'O₂', composition: { O: 2 } },
+            ],
+            products: [
+                { id: 'h2o', label: 'H₂O', composition: { H: 2, O: 1 } },
+            ],
+        },
+        {
+            id: 'mock-1-2',
+            level: 1,
+            textReactants: ['N₂', 'H₂'],
+            textProducts: ['NH₃'],
+            reactants: [
+                { id: 'n2', label: 'N₂', composition: { N: 2 } },
+                { id: 'h2', label: 'H₂', composition: { H: 2 } },
+            ],
+            products: [
+                { id: 'nh3', label: 'NH₃', composition: { N: 1, H: 3 } },
+            ],
+        },
     ],
     '2': [
-        { id: 'mock-2-1', equation: '__ C3H8 + __ O2 -> __ CO2 + __ H2O', coefficients: [1, 5, 3, 4], level: 2 },
+        {
+            id: 'mock-2-1',
+            level: 2,
+            textReactants: ['C₃H₈', 'O₂'],
+            textProducts: ['CO₂', 'H₂O'],
+            reactants: [
+                { id: 'c3h8', label: 'C₃H₈', composition: { C: 3, H: 8 } },
+                { id: 'o2', label: 'O₂', composition: { O: 2 } },
+            ],
+            products: [
+                { id: 'co2', label: 'CO₂', composition: { C: 1, O: 2 } },
+                { id: 'h2o', label: 'H₂O', composition: { H: 2, O: 1 } },
+            ],
+        },
     ],
     '3': [
-        { id: 'mock-3-1', equation: '__ KMnO4 + __ HCl -> __ KCl + __ MnCl2 + __ Cl2 + __ H2O', coefficients: [2, 16, 2, 2, 5, 8], level: 3 },
+        {
+            id: 'mock-3-1',
+            level: 3,
+            textReactants: ['Al', 'O₂'],
+            textProducts: ['Al₂O₃'],
+            reactants: [
+                { id: 'al', label: 'Al', composition: { Al: 1 } },
+                { id: 'o2', label: 'O₂', composition: { O: 2 } },
+            ],
+            products: [
+                { id: 'al2o3', label: 'Al₂O₃', composition: { Al: 2, O: 3 } },
+            ],
+        },
     ],
 };
 // --- FIM DO MOCK ---
@@ -69,7 +134,7 @@ const MOCK_QUESTIONS_BY_LEVEL = {
 /**
  * Busca as questões de um determinado nível de dificuldade.
  * Hoje devolve dados fictícios (mock); quando o Firebase entrar,
- * só o corpo desta função muda — quem chama (main.js) não muda nada.
+ * só o corpo desta função muda — quem chama não muda nada.
  *
  * @param {string|number} levelId - "1" | "2" | "3"
  * @returns {Promise<Array<object>>}
