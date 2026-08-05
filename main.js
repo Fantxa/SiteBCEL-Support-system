@@ -56,7 +56,7 @@ function init3DModel() {
     const loader = new FBXLoader();
     let molecule;
 
-    loader.load('/Modelo-3D/wittig.fbx', (object) => {
+    loader.load('Modelo-3D/wittig.fbx', (object) => {
         console.log("Modelo FBX carregado com sucesso!", object);
         molecule = object;
         
