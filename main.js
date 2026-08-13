@@ -25,7 +25,7 @@ function init3DModel() {
 
     // 2. Configura a Câmera
     const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
-    camera.position.set(0, 2, 5); 
+    camera.position.set(0, 2, 50); 
 
     // 3. Renderizador
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
